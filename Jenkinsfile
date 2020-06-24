@@ -8,7 +8,7 @@ pipeline {
 				steps {
 						
 						echo "Build"
-						cmd_exec('mvn --version')
+						sh 'mvn --version'
 				}
 			}
 
