@@ -11,7 +11,6 @@ pipeline {
 						sh 'mvn --version'
 				}
 			}
-
 			stage('Test') {
 				steps {
 						echo "Test"
