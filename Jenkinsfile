@@ -24,7 +24,6 @@ pipeline {
 						echo "JOB_NAME - $env.JOB_NAME"
 				}
 			}
-
 			stage('Compile') {
 				steps {
 						sh "mvn clean compile"
@@ -40,6 +39,31 @@ pipeline {
 					sh "mvn failsafe:integration-test failsafe:verify"
 			    }
 			}
+			stage('Package') {
+			steps {
+					sh "mvn package -DskipTests"
+			    }
+			}
+			stage('Build Docker Image') {
+			steps {
+					//"docker build -t soodipop/currency-exchange-jenkins:$env.BUILD_TAG" #old school way of doing it
+					// New way of doing it
+					script{ 
+						dockerImage = docker.build("soodipop/currency-exchange-jenkins:${env.BUILD_TAG}")
+					}
+			    }
+			}
+			stage('Push Docker Image') {
+			steps {
+					script{
+						dockerwithRegistry('', 'dockerhub') {
+							dockerImage.push();
+							dockImage.push('latest');
+						}
+					}
+				}
+			}
+
 
 		} 
 		post {
